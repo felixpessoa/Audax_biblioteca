@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.audax.biblioteca.domain.model.Biblioteca;
 import com.audax.biblioteca.domain.repository.BibliotecaRepository;
@@ -37,6 +40,18 @@ public class BibliotecaService {
 			biblioteca.setDataCadastro(LocalDateTime.now());;
 		}
 		return bibliotecaRepository.save(biblioteca);
+	}
+	
+	public Biblioteca update(@Valid @PathVariable Integer id, BibliotecaDTO obj) {
+		Biblioteca biblioteca = findById(id);
+		obj.setDataCadastro(biblioteca.getDataCadastro());
+		obj.setId(id);
+		return create(obj);
+	}
+	
+	public void delete(Integer id) {
+		Biblioteca biblioteca = findById(id);
+		bibliotecaRepository.deleteById(id);
 	}
 
 	private Biblioteca fromDTO(BibliotecaDTO obj) {

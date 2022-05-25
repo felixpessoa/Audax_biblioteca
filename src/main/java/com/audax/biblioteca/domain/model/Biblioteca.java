@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -29,11 +29,12 @@ public class Biblioteca implements Serializable{
 	@JsonFormat(pattern = "HH:mm dd/MM/yyyy")
 	private LocalDateTime dataCadastro;
 	
-	@ManyToMany
-	@JoinColumn(name = "livro_id")
-	private List<Livro> livros = new ArrayList<>();
+//	@ManyToMany
+//	@JoinColumn(name = "livro_id")
+//	private List<Livro> livros = new ArrayList<>();
 	
-	@JsonManagedReference
+//	@JsonManagedReference
+	@JsonIgnore
 	@ManyToMany(mappedBy = "bibliotecas")
 	private List<Bibliotecario> bibliotecarios = new ArrayList<>();
 

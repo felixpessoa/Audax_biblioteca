@@ -1,15 +1,15 @@
 package com.audax.biblioteca.domain.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.audax.biblioteca.domain.model.Biblioteca;
-import com.audax.biblioteca.domain.model.Livro;
 import com.audax.biblioteca.domain.repository.BibliotecaRepository;
 import com.audax.biblioteca.domain.service.exception.ObjectNotFoundException;
-import com.audax.biblioteca.dto.LivroDTO;
+import com.audax.biblioteca.dto.BibliotecaDTO;
 
 @Service
 public class BibliotecaService {
@@ -33,12 +33,20 @@ public class BibliotecaService {
 	
 	public Biblioteca create(BibliotecaDTO obj) {
 		Biblioteca biblioteca = fromDTO(obj);
-		boolean findNome = findByName(livro);
-
-		if (findNome) {
-			throw new ObjectNotFoundException("Livro Já cadastrado");
+		if (biblioteca.getId()== null) {
+			biblioteca.setDataCadastro(LocalDateTime.now());;
 		}
-		return bibliotecaRepository.save(livro);
+		return bibliotecaRepository.save(biblioteca);
+	}
+
+	private Biblioteca fromDTO(BibliotecaDTO obj) {
+		Biblioteca newObj = new Biblioteca();
+		newObj.setId(obj.getId());
+		newObj.setNome(obj.getNome());
+		newObj.setDataCadastro(obj.getDataCadastro());
+//		newObj.setLivros(obj.getLivros());
+		newObj.setBibliotecarios(obj.getBibliotecarios());
+		return newObj;
 	}
 	
 

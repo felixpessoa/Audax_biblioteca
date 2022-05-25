@@ -24,6 +24,10 @@ public class Livro implements Serializable{
 	@NotNull
 	private String nome;
 	
+//	@ManyToMany
+//	@JoinColumn(name = "biblioteca_id")
+//	private List<Biblioteca> bibliotecas = new ArrayList<>();
+	
 	public Livro() {
 		super();
 	}

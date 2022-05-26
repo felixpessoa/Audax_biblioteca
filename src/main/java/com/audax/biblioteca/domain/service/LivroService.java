@@ -47,7 +47,9 @@ public class LivroService {
 		return livroRepository.save(livro);
 	}
 
-	public Livro update(@Valid LivroDTO obj) {
+	public Livro update(@Valid Integer id, LivroDTO obj) {
+		findById(id);
+		obj.setId(id);
 		return create(obj);
 	}
 

@@ -54,9 +54,9 @@ public class LivroController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 	}
 	
-	@PutMapping
-	public ResponseEntity<LivroDTO> update(@Valid @RequestBody LivroDTO dto){
-		dto = new LivroDTO(livroService.update(dto));
+	@PutMapping("/{id}")
+	public ResponseEntity<LivroDTO> update(@Valid @PathVariable Integer id, @RequestBody LivroDTO dto){
+		dto = new LivroDTO(livroService.update(id,dto));
 		return ResponseEntity.ok().body(dto);
 	}
 	

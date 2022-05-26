@@ -1,13 +1,20 @@
 package com.audax.biblioteca.domain.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -24,9 +31,13 @@ public class Livro implements Serializable{
 	@NotNull
 	private String nome;
 	
-//	@ManyToMany
-//	@JoinColumn(name = "biblioteca_id")
-//	private List<Biblioteca> bibliotecas = new ArrayList<>();
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable( name = "LIVRO_BIBLIOTECA",
+			joinColumns = @JoinColumn(name = "livro_id"),
+			inverseJoinColumns = @JoinColumn(name = "biblioteca_id")
+	)
+	private List<Biblioteca> bibliotecas = new ArrayList<>();
 	
 	public Livro() {
 		super();

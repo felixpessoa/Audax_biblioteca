@@ -13,8 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -27,11 +27,13 @@ public class Bibliotecario implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	private	String status;
+	private Boolean admin;
 	
 	@JsonFormat(pattern = "HH:mm dd/MM/yyyy")
 	private LocalDateTime dataCriacao;
 
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable( name = "BIBLIOTECARIO_BIBLIOTECA",
 			joinColumns = @JoinColumn(name = "bibliotecario_id"),
@@ -43,11 +45,14 @@ public class Bibliotecario implements Serializable{
 		super();
 	}
 
-	public Bibliotecario(Integer id, String nome, LocalDateTime dataCriacao) {
+	public Bibliotecario(Integer id, String nome, LocalDateTime dataCriacao, String status,
+			Boolean admin) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.dataCriacao = dataCriacao;
+		this.status = status;
+		this.admin = admin;
 	}
 
 }

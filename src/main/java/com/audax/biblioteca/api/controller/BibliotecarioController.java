@@ -17,45 +17,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.audax.biblioteca.domain.model.Biblioteca;
-import com.audax.biblioteca.domain.service.BibliotecaService;
-import com.audax.biblioteca.dto.BibliotecaDTO;
+import com.audax.biblioteca.domain.model.Bibliotecario;
+import com.audax.biblioteca.domain.service.BibliotecarioService;
+import com.audax.biblioteca.dto.BibliotecarioDTO;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/bibliotecas")
-public class BibliotecaController {
+@RequestMapping("/api/bibliotecarios")
+public class BibliotecarioController {
 	
-	private BibliotecaService bibliotecaService;
+	private BibliotecarioService bibliotecaService;
 
-	public BibliotecaController(BibliotecaService bibliotecaService) {
+	public BibliotecarioController(BibliotecarioService bibliotecaService) {
 		super();
 		this.bibliotecaService = bibliotecaService;
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<BibliotecaDTO>> findAll(){
-		List<Biblioteca> list = bibliotecaService.findAll();
-		List<BibliotecaDTO> listDto = list.stream().map(obj -> new BibliotecaDTO(obj)).collect(Collectors.toList());
+	public ResponseEntity<List<BibliotecarioDTO>> findAll(){
+		List<Bibliotecario> list = bibliotecaService.findAll();
+		List<BibliotecarioDTO> listDto = list.stream().map(obj -> new BibliotecarioDTO(obj)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(listDto);
 	}
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Biblioteca> findByIdBiblioteca(@PathVariable Integer id){
-		Biblioteca obj = bibliotecaService.findById(id);
+	public ResponseEntity<Bibliotecario> findByIdBibliotecario(@PathVariable Integer id){
+		Bibliotecario obj = bibliotecaService.findById(id);
 		return ResponseEntity.status(HttpStatus.OK).body(obj); 
 	}
 	
 	@PostMapping
-	public ResponseEntity<BibliotecaDTO> create(@Valid @RequestBody BibliotecaDTO dto){
-		dto = new BibliotecaDTO(bibliotecaService.create(dto));
+	public ResponseEntity<BibliotecarioDTO> create(@Valid @RequestBody BibliotecarioDTO dto){
+		dto = new BibliotecarioDTO(bibliotecaService.create(dto));
 		return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<BibliotecaDTO> update(@Valid @PathVariable Integer id, @RequestBody BibliotecaDTO dto){
-		dto = new BibliotecaDTO(bibliotecaService.update(id, dto));
+	public ResponseEntity<BibliotecarioDTO> update(@Valid @PathVariable Integer id, @RequestBody BibliotecarioDTO dto){
+		dto = new BibliotecarioDTO(bibliotecaService.update(id, dto));
 		return ResponseEntity.ok().body(dto);
 	}
 

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-import javax.ws.rs.DELETE;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.audax.biblioteca.domain.model.Livro;
@@ -65,7 +66,16 @@ public class LivroController {
 			return ResponseEntity.noContent().build();
 	}
 	
-	
+	@GetMapping("/page")
+	public ResponseEntity<Page<LivroDTO>> findPage(
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
+			@RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direcString){
+		Page<Livro> list = livroService.findPage(page, linesPerPage, orderBy, direcString);
+		Page<LivroDTO> listDto = list.map(obj -> new LivroDTO(obj));
+		return ResponseEntity.ok().body(listDto);
+	}
 	  
 
 }

@@ -5,10 +5,15 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.audax.biblioteca.domain.model.Livro;
 import com.audax.biblioteca.domain.repository.LivroRepository;
+import com.audax.biblioteca.domain.service.exception.DataIntegrityException;
 import com.audax.biblioteca.domain.service.exception.ObjectNotFoundException;
 import com.audax.biblioteca.dto.LivroDTO;
 
@@ -47,8 +52,12 @@ public class LivroService {
 	}
 
 	public void delete(Integer id) {
-		Livro livro = findById(id);
-		livroRepository.deleteById(id);
+		findById(id);
+		try {
+			livroRepository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos");
+		}
 	}
 
 
@@ -61,6 +70,11 @@ public class LivroService {
 			}
 		}
 		return existeNome;
+	}
+	
+	public Page<Livro> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return livroRepository.findAll(pageRequest);
 	}
 
 	private Livro fromDTO(LivroDTO obj) {

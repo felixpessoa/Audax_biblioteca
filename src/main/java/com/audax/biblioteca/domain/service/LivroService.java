@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.audax.biblioteca.domain.model.Biblioteca;
 import com.audax.biblioteca.domain.model.Livro;
 import com.audax.biblioteca.domain.repository.LivroRepository;
 import com.audax.biblioteca.domain.service.exception.DataIntegrityException;
@@ -21,10 +22,12 @@ import com.audax.biblioteca.dto.LivroDTO;
 public class LivroService {
 
 	private LivroRepository livroRepository;
+	private BibliotecaService bibliotecaService; 
 
-	public LivroService(LivroRepository livroRepository) {
+	public LivroService(LivroRepository livroRepository, BibliotecaService bibliotecaService) {
 		super();
 		this.livroRepository = livroRepository;
+		this.bibliotecaService = bibliotecaService;
 	}
 
 	public Livro findById(Integer id) {
@@ -83,6 +86,8 @@ public class LivroService {
 		Livro newObj = new Livro();
 		newObj.setId(obj.getId());
 		newObj.setNome(obj.getNome());
+		List<Biblioteca> bibliotecas = bibliotecaService.findAll();
+		newObj.getBibliotecas().addAll(bibliotecas);
 		return newObj;
 	}
 

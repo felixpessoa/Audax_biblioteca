@@ -27,8 +27,8 @@ public class Livro implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@NotBlank
-	@NotNull
+	@NotBlank(message = "Digite o titulo do livro")
+	@NotNull(message = "Digite o titulo do livro")
 	private String nome;
 	
 	@JsonIgnore

@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.audax.biblioteca.domain.model.Biblioteca;
 import com.audax.biblioteca.domain.model.Bibliotecario;
 import com.audax.biblioteca.domain.repository.BibliotecarioRepository;
 import com.audax.biblioteca.domain.service.exception.DataIntegrityException;
@@ -20,10 +21,12 @@ import com.audax.biblioteca.dto.BibliotecarioDTO;
 public class BibliotecarioService {
 	
 	private BibliotecarioRepository bibliotecarioRepository;
+	private BibliotecaService bibliotecaService;
 
-	public BibliotecarioService(BibliotecarioRepository bibliotecarioRepository) {
+	public BibliotecarioService(BibliotecarioRepository bibliotecarioRepository, BibliotecaService bibliotecaService) {
 		super();
 		this.bibliotecarioRepository = bibliotecarioRepository;
+		this.bibliotecaService = bibliotecaService;
 	}
 	
 	public Bibliotecario findById(Integer id) {
@@ -40,7 +43,8 @@ public class BibliotecarioService {
 		Bibliotecario bibliotecario = fromDTO(obj);
 		if (bibliotecario.getId()== null) {
 			bibliotecario.setDataCriacao(LocalDateTime.now());
-			
+			bibliotecario.setStatus("A");
+			bibliotecario.setAdmin(false);
 		}
 		
 		return bibliotecarioRepository.save(bibliotecario);
@@ -69,6 +73,10 @@ public class BibliotecarioService {
 		newObj.setId(obj.getId());
 		newObj.setNome(obj.getNome());
 		newObj.setDataCriacao(obj.getDataCriacao());
+		Biblioteca biblioteca = bibliotecaService.findById(obj.getBibliotecas());
+		newObj.getBibliotecas().add(biblioteca);
+		newObj.setStatus(obj.getStatus());
+		newObj.setAdmin(obj.getAdmin());
 		return newObj;
 	}
 	

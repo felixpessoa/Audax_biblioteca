@@ -16,6 +16,10 @@ public class BibliotecarioDTO implements Serializable{
 	private String nome;
 	@JsonFormat(pattern = "HH:mm dd/MM/yyyy")
 	private LocalDateTime dataCriacao;
+	private Integer bibliotecas;
+	private String status;
+	private Boolean admin;
+	
 
 	public BibliotecarioDTO() {
 		super();
@@ -26,7 +30,12 @@ public class BibliotecarioDTO implements Serializable{
 		this.id = obj.getId();
 		this.nome = obj.getNome();
 		this.dataCriacao = obj.getDataCriacao();
+		this.bibliotecas = obj.getBibliotecas().getClass().hashCode();
+		this.status = obj.getStatus();
+		this.admin = obj.getAdmin();
 	}
+
+	
 	
 	
 	

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.audax.biblioteca.domain.model.Bibliotecario;
+import com.audax.biblioteca.domain.model.Usuario;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
@@ -18,7 +19,9 @@ public class BibliotecarioDTO implements Serializable{
 	private LocalDateTime dataCriacao;
 	private Integer bibliotecas;
 	private String status;
-	private Boolean admin;
+	private Usuario usuario;
+
+
 	
 
 	public BibliotecarioDTO() {
@@ -32,7 +35,7 @@ public class BibliotecarioDTO implements Serializable{
 		this.dataCriacao = obj.getDataCriacao();
 		this.bibliotecas = obj.getBibliotecas().getClass().hashCode();
 		this.status = obj.getStatus();
-		this.admin = obj.getAdmin();
+		this.usuario = obj.getUsuario();
 	}
 
 	

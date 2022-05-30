@@ -21,7 +21,7 @@ import com.audax.biblioteca.domain.model.Bibliotecario;
 import com.audax.biblioteca.domain.service.BibliotecarioService;
 import com.audax.biblioteca.dto.BibliotecarioDTO;
 
-@CrossOrigin("*")
+@CrossOrigin("http://localhost:4200")
 @RestController
 @RequestMapping("/api/bibliotecarios")
 public class BibliotecarioController {
@@ -54,9 +54,9 @@ public class BibliotecarioController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<BibliotecarioDTO> update(@Valid @PathVariable Integer id, @RequestBody BibliotecarioDTO dto){
-		dto = new BibliotecarioDTO(bibliotecaService.update(id, dto));
-		return ResponseEntity.ok().body(dto);
+	public ResponseEntity<Bibliotecario> update(@Valid @PathVariable Integer id, @RequestBody Bibliotecario obj){
+		bibliotecaService.update(id, obj);
+		return ResponseEntity.ok().body(obj);
 	}
 
 	@DeleteMapping("/{id}")

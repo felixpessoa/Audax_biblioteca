@@ -7,14 +7,17 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.audax.biblioteca.domain.model.Biblioteca;
 import com.audax.biblioteca.domain.model.Bibliotecario;
+import com.audax.biblioteca.domain.model.Usuario;
 import com.audax.biblioteca.domain.repository.BibliotecarioRepository;
 import com.audax.biblioteca.domain.service.exception.DataIntegrityException;
 import com.audax.biblioteca.domain.service.exception.ObjectNotFoundException;
+import com.audax.biblioteca.domain.service.exception.UsuarioService;
 import com.audax.biblioteca.dto.BibliotecarioDTO;
 
 @Service
@@ -22,11 +25,16 @@ public class BibliotecarioService {
 	
 	private BibliotecarioRepository bibliotecarioRepository;
 	private BibliotecaService bibliotecaService;
+	private UsuarioService usuarioService;
+	private PasswordEncoder passwordEncoder;
 
-	public BibliotecarioService(BibliotecarioRepository bibliotecarioRepository, BibliotecaService bibliotecaService) {
+	public BibliotecarioService(BibliotecarioRepository bibliotecarioRepository, BibliotecaService bibliotecaService,
+			UsuarioService usuarioService, PasswordEncoder passwordEncoder) {
 		super();
 		this.bibliotecarioRepository = bibliotecarioRepository;
 		this.bibliotecaService = bibliotecaService;
+		this.usuarioService = usuarioService;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	public Bibliotecario findById(Integer id) {
@@ -39,23 +47,28 @@ public class BibliotecarioService {
 		return bibliotecarioRepository.findAll();
 	}
 	
-	public Bibliotecario create(BibliotecarioDTO obj) {
-		Bibliotecario bibliotecario = fromDTO(obj);
-		if (bibliotecario.getId()== null) {
-			bibliotecario.setDataCriacao(LocalDateTime.now());
-			bibliotecario.setStatus("A");
-			bibliotecario.setAdmin(false);
+	public Bibliotecario create(BibliotecarioDTO dto) {
+		Bibliotecario obj = fromDTO(dto);
+		if (obj.getId()== null) {
+			obj.setDataCriacao(LocalDateTime.now());
+			obj.setStatus("Desativado");
 		}
-		
-		return bibliotecarioRepository.save(bibliotecario);
+		return bibliotecarioRepository.save(obj);
 	}
 	
 
-	public Bibliotecario update(@Valid @PathVariable Integer id, BibliotecarioDTO obj) {
-		Bibliotecario bibliotecario = findById(id);
-		obj.setDataCriacao(bibliotecario.getDataCriacao());
+	public Bibliotecario update(@Valid @PathVariable Integer id, Bibliotecario obj) {
+		Optional<Bibliotecario> optObj  = bibliotecarioRepository.findById(id);
+		if (optObj.isEmpty()) {
+			throw new ObjectNotFoundException("Usuario não encontrado!");
+		}
+		String senhaCriptografada = passwordEncoder.encode(obj.getUsuario().getPassword());
+		obj.getUsuario().setPassword(senhaCriptografada);
+		obj.getUsuario().setUsuarioId(optObj.get().getUsuario().getUsuarioId());
+		usuarioService.upDateUsuario(obj.getUsuario().getUsuarioId(), obj.getUsuario());
 		obj.setId(id);
-		return create(obj);
+		obj.setDataCriacao(optObj.get().getDataCriacao());
+		return bibliotecarioRepository.save(obj);
 	}
 	
 	public void delete(Integer id) {
@@ -75,8 +88,9 @@ public class BibliotecarioService {
 		newObj.setDataCriacao(obj.getDataCriacao());
 		Biblioteca biblioteca = bibliotecaService.findById(obj.getBibliotecas());
 		newObj.getBibliotecas().add(biblioteca);
-		newObj.setStatus(obj.getStatus());
-		newObj.setAdmin(obj.getAdmin());
+		String senhaCriptografada = passwordEncoder.encode(obj.getUsuario().getPassword());
+		Usuario usuario = new Usuario(obj.getUsuario().getUsuarioId(), obj.getUsuario().getLogin(), senhaCriptografada, obj.getUsuario().getAdmin());
+		newObj.setUsuario(usuario);
 		return newObj;
 	}
 	

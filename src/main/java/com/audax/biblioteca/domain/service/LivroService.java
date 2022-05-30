@@ -43,10 +43,13 @@ public class LivroService {
 	public Livro create(LivroDTO obj) {
 		Livro livro = fromDTO(obj);
 		boolean findNome = findByName(livro);
+		List<Biblioteca> bibliotecas = bibliotecaService.findAll();
+		
 
 		if (findNome) {
 			throw new ObjectNotFoundException("Livro Já cadastrado");
 		}
+		livro.getBibliotecas().addAll(bibliotecas);
 		return livroRepository.save(livro);
 	}
 
@@ -86,8 +89,7 @@ public class LivroService {
 		Livro newObj = new Livro();
 		newObj.setId(obj.getId());
 		newObj.setNome(obj.getNome());
-		List<Biblioteca> bibliotecas = bibliotecaService.findAll();
-		newObj.getBibliotecas().addAll(bibliotecas);
+		
 		return newObj;
 	}
 

@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,7 +30,9 @@ public class Bibliotecario implements Serializable{
 	private Integer id;
 	private String nome;
 	private	String status;
-	private Boolean admin;
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario; 
 	
 	@JsonFormat(pattern = "HH:mm dd/MM/yyyy")
 	private LocalDateTime dataCriacao;
@@ -46,14 +49,13 @@ public class Bibliotecario implements Serializable{
 		super();
 	}
 
-	public Bibliotecario(Integer id, String nome, LocalDateTime dataCriacao, String status,
-			Boolean admin) {
+	public Bibliotecario(Integer id, String nome, LocalDateTime dataCriacao, String status, Usuario usuario) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.dataCriacao = dataCriacao;
 		this.status = status;
-		this.admin = admin;
+		this.usuario = usuario;
 	}
 
 }

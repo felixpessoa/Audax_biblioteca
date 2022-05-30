@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             "/swagger-ui/**",
             
             // other public endpoints of your API may be appended to this array
-            "/login"
+            "http://localhost:4200/**"
     };
 	
 	
